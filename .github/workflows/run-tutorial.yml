@@ -38,6 +38,14 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Install dependencies
       run: |
         sudo apt-get update
@@ -51,7 +59,7 @@ jobs:
     - name: Install Training Agents tutorial requirements
       if: matrix.tutorial-group == 'training_agents'
       run: |
-        pip install ".[mujoco, toy_text, box2d]" torch seaborn matplotlib pandas tqdm
+        pip install ".[mujoco, toy_text, box2d] torch seaborn matplotlib pandas tqdm"
 
     - name: Get changed files
       id: changed-files
